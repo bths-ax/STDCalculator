@@ -31,15 +31,19 @@ public class Main {
 			int sepIdx = input.indexOf(",");
 			double left = parseExpression(input.substring(0, sepIdx).trim(), mean, std);
 			double right = parseExpression(input.substring(sepIdx + 1).trim(), mean, std);
-			System.out.println(left);
-			System.out.println(right);
+			double percent = calc.calculatePercentWithin(left, right) * 100;
+			System.out.println(String.format("Percentage of data within [%.2f, %.2f]: %.2f%%", left, right, percent));
+			System.out.println();
 		}
 	}
 
 	public static double parseExpression(String expr, double mean, double std) {
-		Pattern pat = Pattern.compile("STD\\((\\d+)\\)");
-		Matcher mat = pat.matcher(expr);
-		System.out.println(mat.matches());
-		return 0;
+		Pattern pat = Pattern.compile("STD\\((-?\\d+)\\)");
+		Matcher mat = pat.matcher(expr.toUpperCase());
+		if (mat.matches()) {
+			return mean + std * Double.parseDouble(mat.group(1));
+		} else {
+			return Double.parseDouble(expr);
+		}
 	}
 }
